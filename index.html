@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Auto Report Formatter V3 - Smart Import</title>
+    <title>Auto Report V7 - Complete Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         * { box-sizing: border-box; }
@@ -11,190 +11,236 @@
         .kendala-item { animation: slideIn 0.3s ease-out; }
         @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #1f2937; border-radius: 4px; }
         ::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #6b7280; }
         
-        /* Glow Effect */
-        .glow { box-shadow: 0 0 20px rgba(99, 102, 241, 0.3); }
-        .glow-gold { box-shadow: 0 0 20px rgba(251, 191, 36, 0.4); }
-
-        /* Checkbox Custom Style */
+        /* Glow Effects */
+        .glow { box-shadow: 0 0 15px rgba(99, 102, 241, 0.2); }
+        .glow-gold { box-shadow: 0 0 15px rgba(251, 191, 36, 0.3); }
+        .glow-green { box-shadow: 0 0 15px rgba(16, 185, 129, 0.2); }
+        
+        /* Checkbox Custom */
         .check-btn.active { border-color: #10b981; background-color: #064e3b; }
         .check-btn.inactive { border-color: #ef4444; background-color: #7f1d1d; }
+        
+        /* Reminder Badge Pulse */
+        .pulse-red { animation: pulse-red 2s infinite; }
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
+        .history-item { transition: all 0.2s; }
+        .history-item:hover { transform: translateX(-4px); border-color: #60a5fa; }
     </style>
 </head>
 <body class="bg-gradient-to-br from-gray-900 via-gray-800 to-black min-h-screen p-2 md:p-4">
-    <div class="max-w-7xl mx-auto">
-        <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-3xl shadow-2xl overflow-hidden border border-gray-700 glow">
+    <div class="max-w-[1700px] mx-auto h-full flex flex-col">
+        <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-3xl shadow-2xl overflow-hidden border border-gray-700 glow flex flex-col h-full">
             
             <!-- Header -->
-            <div class="bg-gradient-to-r from-purple-900 via-indigo-900 to-blue-900 p-6 md:p-8 text-white border-b border-purple-700 relative">
+            <div class="bg-gradient-to-r from-purple-900 via-indigo-900 to-blue-900 p-4 md:p-6 text-white border-b border-purple-700 shrink-0">
                 <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                     <div>
-                        <h1 class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">SERAH TERIMA CS LINE TVTOTO</h1>
-                        <p class="text-purple-200 text-sm md:text-base font-medium mt-1">Auto Save & Smart Format Edition</p>
+                        <h1 class="text-2xl md:text-3xl font-bold bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">SERAH TERIMA CS TVTOTO <span class="text-white text-base font-normal opacity-80"></span></h1>
+                        <p class="text-purple-200 text-xs md:text-sm font-medium mt-1"></p>
                     </div>
-                    <button onclick="openImportModal()" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-all shadow-lg font-semibold">
-                        📥 Import Dari Text
-                    </button>
-                </div>
-            </div>
-
-            <div class="p-4 md:p-8">
-                
-                <!-- CS Info -->
-                <div class="mb-6 bg-gradient-to-r from-gray-800 to-gray-700 p-4 rounded-xl border-2 border-gray-600 glow">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-gray-300 font-semibold mb-2">👤 Nama CS</label>
-                            <input type="text" id="csName" class="w-full p-3 border-2 border-gray-600 bg-gray-700 text-white rounded-lg focus:border-purple-500 focus:outline-none font-semibold text-lg" placeholder="Masukkan Nama CS">
-                        </div>
-                        <div>
-                            <label class="block text-gray-300 font-semibold mb-2">🕐 Shift</label>
-                            <select id="shift" class="w-full p-3 border-2 border-gray-600 bg-gray-700 text-white rounded-lg focus:border-purple-500 focus:outline-none font-semibold text-lg">
-                                <option value="Pagi">Pagi</option>
-                                <option value="Sore">Sore</option>
-                                <option value="Malam">Malam</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="mt-4 flex justify-end">
-                         <button onclick="resetAllData()" class="text-xs text-red-400 hover:text-red-300 underline">⚠️ Reset Semua Data (Hapus LocalStorage)</button>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    
-                    <!-- Left Column: Input Area -->
-                    <div class="space-y-6">
-                        
-                        <!-- Checklist -->
-                        <div class="bg-gradient-to-r from-emerald-900 to-green-900 p-6 rounded-xl border-2 border-emerald-700 glow">
-                            <div class="flex items-center justify-between mb-4">
-                                <h2 class="text-xl font-bold text-emerald-100">📋 Checklist Tugas Harian</h2>
-                                <div class="flex gap-2">
-                                    <button onclick="toggleAll(true)" class="text-xs bg-emerald-700 hover:bg-emerald-600 text-white px-2 py-1 rounded">Check All</button>
-                                    <button onclick="toggleAll(false)" class="text-xs bg-red-900 hover:bg-red-800 text-white px-2 py-1 rounded">Uncheck All</button>
-                                </div>
-                            </div>
-                            <div id="checklistContainer" class="grid grid-cols-1 gap-2 max-h-[400px] overflow-y-auto pr-2"></div>
-                        </div>
-
-                        <!-- Input Kendala -->
-                        <div class="bg-gradient-to-br from-orange-900 to-red-900 p-6 rounded-xl border-2 border-orange-700 glow-gold">
-                            <h3 class="text-lg font-bold text-orange-100 mb-4 flex items-center gap-2">
-                                <span class="text-2xl">➕</span>
-                                Tambah Kendala Manual
-                            </h3>
-                            
-                            <div class="mb-3">
-                                <label class="block text-orange-200 font-semibold mb-2">📝 Deskripsi Kendala</label>
-                                <textarea id="kendalaText" placeholder="Contoh: wd bca RIFAL HERIANA" class="w-full p-3 border-2 border-orange-600 bg-gray-800 text-white placeholder-gray-500 rounded-lg focus:border-orange-400 focus:outline-none resize-none h-24 font-mono text-sm"></textarea>
-                            </div>
-
-                            <div class="mb-4">
-                                <label class="block text-orange-200 font-semibold mb-2">🏷️ Kategori</label>
-                                <select id="kategoriDropdown" class="w-full p-3 border-2 border-orange-600 bg-gray-800 text-white rounded-lg focus:border-orange-400 focus:outline-none font-semibold text-lg">
-                                    <option value="bank">🏦 Kendala Bank</option>
-                                    <option value="game">🎮 Kendala Game</option>
-                                    <option value="provider">📱 Kendala Provider</option>
-                                    <option value="lainnya">⚠️ Kendala Lainnya</option>
-                                </select>
-                            </div>
-
-                            <button onclick="tambahKendalaBaru()" class="w-full bg-gradient-to-r from-orange-600 to-red-600 text-white py-3 px-6 rounded-xl font-bold text-lg hover:from-orange-500 hover:to-red-500 transition-all shadow-lg transform hover:scale-105">
-                                ➕ Tambah ke List
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Right Column: List Kendala & Output -->
-                    <div class="space-y-6">
-                        
-                        <!-- List Kendala -->
-                        <div class="bg-gray-800 p-6 rounded-xl border-2 border-gray-600 glow h-full flex flex-col">
-                            <div class="flex items-center justify-between mb-4">
-                                <h3 class="text-lg font-bold text-gray-200">📋 Kendala Tersimpan</h3>
-                                <button onclick="clearAllKendala()" class="text-sm bg-red-900 text-red-200 px-3 py-1 rounded-lg hover:bg-red-800 transition-colors border border-red-700">
-                                    🗑️ Hapus Semua
-                                </button>
-                            </div>
-                            <div id="kendalaList" class="space-y-2 flex-1 overflow-y-auto max-h-[400px] pr-2">
-                                <p class="text-gray-500 text-sm text-center py-8">Belum ada kendala.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Full Width Output -->
-                <div class="mt-8">
-                    <div class="mb-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                        <label class="block text-gray-200 font-bold text-lg">📤 Hasil Report</label>
-                        <button id="copyBtn" onclick="copyToClipboard()" class="flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-green-600 text-white px-8 py-3 rounded-xl hover:from-emerald-500 hover:to-green-500 transition-all font-semibold shadow-lg transform hover:scale-105">
-                            📋 Salin Hasil
+                    <div class="flex gap-2">
+                        <button onclick="openImportModal()" class="bg-blue-600 hover:bg-blue-500 text-white px-3 py-2 rounded-lg flex items-center gap-2 transition-all shadow-lg font-semibold text-xs border-2 border-blue-400">
+                            📥 IMPORT DARI TEXT
+                        </button>
+                        <button onclick="resetAllData()" class="bg-gray-700 hover:bg-red-600 text-white px-3 py-2 rounded-lg transition-all shadow-lg font-semibold text-xs">
+                            🔄 Reset
                         </button>
                     </div>
-                    <textarea id="output" readonly class="w-full h-[300px] p-4 border-2 border-gray-600 bg-gray-900 text-gray-100 rounded-xl font-mono text-sm resize-none shadow-inner focus:outline-none"></textarea>
                 </div>
-
             </div>
 
-            <!-- Footer Stats -->
-            <div class="bg-gradient-to-r from-gray-900 to-gray-800 p-6 border-t border-gray-700">
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-                    <div class="bg-gray-800 p-4 rounded-xl shadow-md border-2 border-blue-700 glow">
-                        <div class="text-2xl font-bold text-blue-400" id="statBank">0</div>
-                        <div class="text-xs font-semibold text-blue-300">🏦 Bank</div>
+            <div class="p-4 flex-1 overflow-hidden flex flex-col xl:flex-row gap-5">
+                
+                <!-- LEFT COLUMN (30%): Inputs, Checklist, Manual Input -->
+                <div class="xl:w-[30%] flex flex-col gap-4 overflow-y-auto pr-1 pb-4">
+                    
+                    <!-- CS Info -->
+                    <div class="bg-gradient-to-r from-gray-800 to-gray-700 p-4 rounded-xl border-2 border-gray-600 glow shrink-0">
+                        <h2 class="text-gray-300 font-bold mb-3 border-b border-gray-600 pb-2 flex justify-between">
+                            <span>👤 ＵＬＡ ＫＡＭ ＳＡＮＫＳＩ  ＰＡＬ</span>
+                        </h2>
+                        <div class="grid grid-cols-1 gap-3">
+                            <div class="flex gap-2">
+                                <input type="text" id="csName" class="w-1/2 p-2 border-2 border-gray-600 bg-gray-800 text-white rounded-lg focus:border-purple-500 focus:outline-none text-sm font-semibold" placeholder="Nama CS">
+                                <select id="shift" class="w-1/2 p-2 border-2 border-gray-600 bg-gray-800 text-white rounded-lg focus:border-purple-500 focus:outline-none text-sm font-semibold">
+                                    <option value="Pagi">Pagi</option>
+                                    <option value="Sore">Sore</option>
+                                    <option value="Malam">Malam</option>
+                                </select>
+                            </div>
+                            <div>
+                                <input type="text" id="linkYT" class="w-full p-2 border-2 border-red-900 bg-gray-800 text-white rounded-lg focus:border-red-500 focus:outline-none text-xs font-mono mb-2" placeholder="🔴 Link YT...">
+                                <input type="text" id="linkAman" class="w-full p-2 border-2 border-green-900 bg-gray-800 text-white rounded-lg focus:border-green-500 focus:outline-none text-xs font-mono" placeholder="🟢 Link Aman...">
+                            </div>
+                        </div>
                     </div>
-                    <div class="bg-gray-800 p-4 rounded-xl shadow-md border-2 border-purple-700 glow">
-                        <div class="text-2xl font-bold text-purple-400" id="statGame">0</div>
-                        <div class="text-xs font-semibold text-purple-300">🎮 Game</div>
+
+                    <!-- Checklist -->
+                    <div class="bg-gradient-to-r from-emerald-900 to-green-900 p-4 rounded-xl border-2 border-emerald-700 glow flex-1 flex flex-col min-h-[200px]">
+                        <div class="flex items-center justify-between mb-3 shrink-0">
+                            <h2 class="text-lg font-bold text-emerald-100">📋 Checklist</h2>
+                            <div class="flex gap-1">
+                                <button onclick="toggleAll(true)" class="text-[10px] bg-emerald-700 hover:bg-emerald-600 text-white px-2 py-1 rounded">All</button>
+                                <button onclick="toggleAll(false)" class="text-[10px] bg-red-900 hover:bg-red-800 text-white px-2 py-1 rounded">None</button>
+                            </div>
+                        </div>
+                        <div id="checklistContainer" class="grid grid-cols-1 gap-1.5 overflow-y-auto pr-1 flex-1 content-start"></div>
                     </div>
-                    <div class="bg-gray-800 p-4 rounded-xl shadow-md border-2 border-pink-700 glow">
-                        <div class="text-2xl font-bold text-pink-400" id="statProvider">0</div>
-                        <div class="text-xs font-semibold text-pink-300">📱 Provider</div>
+
+                    <!-- RESTORED: Input Kendala Manual -->
+                    <div class="bg-gradient-to-br from-orange-900 to-red-900 p-4 rounded-xl border-2 border-orange-700 glow-gold shrink-0">
+                        <h3 class="text-sm font-bold text-orange-100 mb-2 flex items-center gap-2">
+                            <span>✏️</span> Input Kendala Manual
+                        </h3>
+                        
+                        <div class="mb-2">
+                            <textarea id="kendalaText" placeholder="Contoh: WD BCA Delay / Gangguan..." class="w-full p-2.5 border-2 border-orange-600 bg-gray-800 text-white placeholder-gray-500 rounded-lg focus:border-orange-400 focus:outline-none resize-none h-16 font-mono text-xs"></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <select id="kategoriDropdown" class="w-full p-2 border-2 border-orange-600 bg-gray-800 text-white rounded-lg focus:border-orange-400 focus:outline-none font-semibold text-xs">
+                                <option value="bank">🏦 KENDALA BANK</option>
+                                <option value="game">🎮 KENDALA GAME</option>
+                                <option value="provider">📱 KENDALA PROVIDER</option>
+                                <option value="lainnya">⚠️ KENDALA LAINNYA</option>
+                            </select>
+                        </div>
+
+                        <button onclick="tambahKendalaBaru()" class="w-full bg-orange-600 hover:bg-orange-500 text-white py-2 rounded-lg font-bold text-sm transition-all shadow-lg">
+                            ➕ TAMBAH MANUAL
+                        </button>
                     </div>
-                    <div class="bg-gray-800 p-4 rounded-xl shadow-md border-2 border-orange-700 glow">
-                        <div class="text-2xl font-bold text-orange-400" id="statLainnya">0</div>
-                        <div class="text-xs font-semibold text-orange-300">⚠️ Lainnya</div>
+
+                    <!-- Quick Templates -->
+                    <div class="bg-gray-800 p-3 rounded-xl border border-gray-700 shrink-0">
+                        <h3 class="text-xs font-bold text-yellow-500 mb-2 uppercase tracking-wide"></h3>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="quickAdd('BCA Offline / Gangguan', 'bank')" class="bg-gray-700 hover:bg-blue-900 text-gray-200 text-[10px] py-1.5 px-2 rounded border border-gray-600 hover:border-blue-500 transition-colors text-left">🏦 BCA Offline</button>
+                            <button onclick="quickAdd('BRI Gangguan / Maintenance', 'bank')" class="bg-gray-700 hover:bg-blue-900 text-gray-200 text-[10px] py-1.5 px-2 rounded border border-gray-600 hover:border-blue-500 transition-colors text-left">🏦 BRI Gangguan</button>
+                            <button onclick="quickAdd('BNI Gangguan / Down', 'bank')" class="bg-gray-700 hover:bg-green-900 text-gray-200 text-[10px] py-1.5 px-2 rounded border border-gray-600 hover:border-green-500 transition-colors text-left">🏦 BNI Gangguan</button>
+                            <button onclick="quickAdd('MANDIRI Offline / bank', 'bank')" class="bg-gray-700 hover:bg-blue-900 text-gray-200 text-[10px] py-1.5 px-2 rounded border border-gray-600 hover:border-blue-500 transition-colors text-left">🏦 MANDIRI Offline</button>
+                            <button onclick="quickAdd('Slot / Game Lag', 'game')" class="bg-gray-700 hover:bg-purple-900 text-gray-200 text-[10px] py-1.5 px-2 rounded border border-gray-600 hover:border-purple-500 transition-colors text-left">🎮 Game Lag</button>
+                            <button onclick="quickAdd('Live Chat Error', 'provider')" class="bg-gray-700 hover:bg-orange-900 text-gray-200 text-[10px] py-1.5 px-2 rounded border border-gray-600 hover:border-orange-500 transition-colors text-left">💬 LC Error</button>
+                        </div>
                     </div>
                 </div>
+
+                <!-- MIDDLE COLUMN (40%): Reminder, Kendala, Output -->
+                <div class="xl:w-[40%] flex flex-col gap-4 h-full overflow-hidden">
+                    
+                    <!-- Pengingat Panel -->
+                    <div class="bg-gradient-to-br from-indigo-900 to-purple-900 p-4 rounded-xl border border-indigo-600 shrink-0 relative overflow-hidden" id="reminderPanel">
+                        <div class="absolute top-0 right-0 p-2 opacity-10"><i class="text-6xl">📅</i></div>
+                        <div class="relative z-10">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="text-indigo-200 font-bold text-sm">📅 Agenda & Alarm</h3>
+                                <button onclick="enableAlarm()" id="btnEnableAlarm" class="bg-yellow-600 hover:bg-yellow-500 text-white text-[10px] px-2 py-1 rounded flex items-center gap-1 shadow-lg animate-pulse">
+                                    🔔 Aktifkan Alarm
+                                </button>
+                            </div>
+                            
+                            <div class="flex gap-2 mb-2">
+                                <input type="text" id="reminderTitle" class="flex-1 p-1.5 border border-indigo-500 bg-gray-900 text-white text-xs rounded focus:outline-none" placeholder="Misal: SGP Result Delay">
+                                <input type="date" id="reminderDate" class="p-1.5 border border-indigo-500 bg-gray-900 text-white text-xs rounded focus:outline-none text-gray-400">
+                                <button onclick="addReminder()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 rounded text-xs font-bold">➕</button>
+                            </div>
+                            
+                            <div id="reminderList" class="max-h-[80px] overflow-y-auto space-y-1 pr-1 custom-scrollbar">
+                                <div class="text-indigo-400 text-[10px] italic text-center">Belum ada pengingat aktif.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- List Kendala -->
+                    <div class="bg-gray-800 p-3 rounded-xl border border-gray-600 glow flex-1 flex flex-col min-h-[200px]">
+                        <div class="flex items-center justify-between mb-2 shrink-0">
+                            <h3 class="text-sm font-bold text-gray-200">📋 Kendala Saat Ini</h3>
+                            <button onclick="clearAllKendala()" class="text-[10px] bg-red-900/50 text-red-300 px-2 py-0.5 rounded hover:bg-red-800">🗑️ Clear</button>
+                        </div>
+                        <div id="kendalaList" class="space-y-1.5 flex-1 overflow-y-auto pr-1">
+                            <p class="text-gray-500 text-xs text-center py-4">Belum ada kendala.</p>
+                        </div>
+                        
+                        <!-- Mini Stats -->
+                        <div class="mt-2 pt-2 border-t border-gray-700 grid grid-cols-4 gap-1 text-center shrink-0">
+                            <div class="bg-gray-900/80 p-1 rounded border border-blue-900/50"><div class="text-xs font-bold text-blue-400" id="statBank">0</div></div>
+                            <div class="bg-gray-900/80 p-1 rounded border border-purple-900/50"><div class="text-xs font-bold text-purple-400" id="statGame">0</div></div>
+                            <div class="bg-gray-900/80 p-1 rounded border border-pink-900/50"><div class="text-xs font-bold text-pink-400" id="statProvider">0</div></div>
+                            <div class="bg-gray-900/80 p-1 rounded border border-orange-900/50"><div class="text-xs font-bold text-orange-400" id="statLainnya">0</div></div>
+                        </div>
+                    </div>
+
+                    <!-- Output Area -->
+                    <div class="bg-gray-900 p-3 rounded-xl border border-gray-700 glow-green flex flex-col h-1/3 shrink-0">
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="text-gray-200 font-bold text-xs">📤 Hasil Report</label>
+                            <div class="flex gap-2">
+                                <button onclick="downloadReport()" class="text-[10px] bg-gray-700 hover:bg-gray-600 text-white px-2 py-1 rounded border border-gray-600 flex items-center gap-1">💾 Save .txt</button>
+                                <button onclick="saveToHistory()" class="text-[10px] bg-indigo-600 hover:bg-indigo-500 text-white px-2 py-1 rounded shadow">💾 Simpan</button>
+                                <button id="copyBtn" onclick="copyToClipboard()" class="text-[10px] bg-emerald-600 hover:bg-emerald-500 text-white px-2 py-1 rounded font-bold shadow">📋 Salin</button>
+                            </div>
+                        </div>
+                        <textarea id="output" readonly class="w-full h-full p-2.5 border border-gray-700 bg-black/50 text-gray-100 rounded-lg font-mono text-[11px] resize-none focus:outline-none leading-relaxed"></textarea>
+                    </div>
+                </div>
+
+                <!-- RIGHT COLUMN (30%): History Log -->
+                <div class="xl:w-[30%] flex flex-col h-full overflow-hidden bg-gray-800/40 rounded-xl border border-gray-700/50">
+                    <div class="p-3 bg-gray-800 border-b border-gray-700 flex justify-between items-center shrink-0">
+                        <h3 class="text-sm font-bold text-blue-300">🗂️ Riwayat Laporan</h3>
+                        <button onclick="clearHistory()" class="text-[10px] text-red-400 hover:text-red-300 underline">Hapus Semua</button>
+                    </div>
+                    <div id="historyList" class="flex-1 overflow-y-auto p-3 space-y-3">
+                        <div class="text-center text-gray-500 text-xs mt-10 italic">Belum ada riwayat tersimpan.</div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
 
     <!-- Import Modal -->
-    <div id="importModal" class="fixed inset-0 bg-black bg-opacity-80 hidden items-center justify-center z-50 backdrop-blur-sm p-4">
-        <div class="bg-gray-800 rounded-2xl shadow-2xl border border-gray-600 w-full max-w-2xl overflow-hidden transform transition-all scale-100">
+    <div id="importModal" class="fixed inset-0 bg-black bg-opacity-90 hidden items-center justify-center z-50 backdrop-blur-sm p-4">
+        <div class="bg-gray-800 rounded-2xl shadow-2xl border border-gray-600 w-full max-w-xl overflow-hidden">
             <div class="bg-gradient-to-r from-blue-900 to-indigo-900 p-4 flex justify-between items-center border-b border-blue-700">
-                <h3 class="text-xl font-bold text-white">📥 Import Dari Serah Terima Sebelumnya</h3>
-                <button onclick="closeImportModal()" class="text-gray-300 hover:text-white text-2xl">&times;</button>
+                <h3 class="text-lg font-bold text-white">📥 Import / Paste Data</h3>
+                <button onclick="closeImportModal()" class="text-gray-300 hover:text-white text-2xl leading-none">&times;</button>
             </div>
-            <div class="p-6">
-                <p class="text-gray-300 mb-4 text-sm">Tempel (Paste) teks report dari sit sebelumnya di bawah ini. Sistem akan otomatis mengatur nama, shift, checklist, dan kendala.</p>
-                <textarea id="importArea" class="w-full h-64 p-4 bg-gray-900 text-white border-2 border-gray-600 rounded-xl font-mono text-sm focus:border-blue-500 focus:outline-none resize-none" placeholder="Contoh:&#10;Nama CS : Budi&#10;Shift : Malam&#10;✅ Channel WA&#10;❌ Maintenance&#10;🏦 KENDALA BANK:&#10;  • BCA Gangguan"></textarea>
+            <div class="p-4">
+                <p class="text-gray-300 mb-3 text-xs">Paste teks report sebelumnya di sini. Sistem akan otomatis mengisi nama, checklist, link, dan kendala.</p>
+                <textarea id="importArea" class="w-full h-40 p-3 bg-gray-900 text-white border-2 border-gray-600 rounded-xl font-mono text-xs focus:border-blue-500 focus:outline-none resize-none"></textarea>
             </div>
             <div class="p-4 bg-gray-900 border-t border-gray-700 flex justify-end gap-3">
-                <button onclick="closeImportModal()" class="px-6 py-2 rounded-lg text-gray-300 hover:bg-gray-700 font-semibold transition-colors">Batal</button>
-                <button onclick="processImport()" class="px-6 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-bold shadow-lg transition-colors">✨ Proses Import</button>
+                <button onclick="closeImportModal()" class="px-4 py-2 rounded-lg text-gray-300 hover:bg-gray-700 text-sm">Batal</button>
+                <button onclick="processImport()" class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-bold shadow-lg text-sm">✨ Proses</button>
             </div>
         </div>
     </div>
 
     <!-- Toast Notification -->
-    <div id="toast" class="fixed bottom-5 right-5 bg-gray-800 border-l-4 border-emerald-500 text-white px-6 py-3 rounded shadow-2xl transform translate-y-20 transition-transform duration-300 z-50 flex items-center gap-3">
-        <span class="text-xl">✅</span>
-        <span id="toastMsg" class="font-semibold">Data Tersimpan!</span>
+    <div id="toast" class="fixed bottom-5 right-5 bg-gray-800 border-l-4 border-emerald-500 text-white px-5 py-3 rounded shadow-2xl transform translate-y-20 transition-transform duration-300 z-50 flex items-center gap-3">
+        <span class="text-lg">✅</span>
+        <span id="toastMsg" class="font-semibold text-sm">Berhasil!</span>
     </div>
 
     <script>
         // --- DATA & STATE ---
         let savedKendala = [];
+        let reportHistory = [];
+        let reminders = []; 
+        let alarmEnabled = false;
         
-        // Checklist definition
         const defaultChecklist = [
             { text: 'Channel WA Prediksi pasaran besar setiap hari 1x', checked: false },
             { text: 'Syair / Prediksi', checked: false },
@@ -210,30 +256,22 @@
             { text: 'Wordpress Kemenangan besar di atas 80jt', checked: false }
         ];
 
-        // Working copy of checklist
         let checklist = JSON.parse(JSON.stringify(defaultChecklist));
 
-        const categoryIcons = {
-            bank: '🏦',
-            game: '🎮',
-            provider: '📱',
-            lainnya: '⚠️'
-        };
-
-        const categoryNames = {
-            bank: 'KENDALA BANK',
-            game: 'KENDALA GAME',
-            provider: 'KENDALA PROVIDER',
-            lainnya: 'KENDALA LAINNYA'
-        };
+        const categoryIcons = { bank: '🏦', game: '🎮', provider: '📱', lainnya: '⚠️' };
+        const categoryNames = { bank: 'KENDALA BANK', game: 'KENDALA GAME', provider: 'KENDALA PROVIDER', lainnya: 'KENDALA LAINNYA' };
 
         // --- INITIALIZATION ---
         window.addEventListener('DOMContentLoaded', () => {
-            loadData(); // Load dari LocalStorage
+            loadData();
+            loadReminders();
+            loadHistory();
             initChecklist();
-            updateKendalaList(); // <--- DITAMBAHKAN: Agar list tampil saat refresh
-            updateStats();       // <--- DITAMBAHKAN: Agar angka tampil saat refresh
+            updateKendalaList();
+            updateStats();
+            renderReminders();
             generateReport();
+            setInterval(checkAlarms, 60000); // Cek alarm tiap 1 menit
         });
 
         // --- LOCAL STORAGE FUNCTIONS ---
@@ -241,35 +279,292 @@
             const data = {
                 csName: document.getElementById('csName').value,
                 shift: document.getElementById('shift').value,
+                linkYT: document.getElementById('linkYT').value,
+                linkAman: document.getElementById('linkAman').value,
                 checklist: checklist,
                 kendala: savedKendala
             };
-            localStorage.setItem('tvtoto_report_v3', JSON.stringify(data));
-            // Jangan tampilkan toast terlalu sering saat mengetik, tapi opsional dihapus
+            localStorage.setItem('tvtoto_report_v7', JSON.stringify(data));
         }
 
         function loadData() {
-            const stored = localStorage.getItem('tvtoto_report_v3');
+            const stored = localStorage.getItem('tvtoto_report_v7');
             if (stored) {
                 const data = JSON.parse(stored);
                 document.getElementById('csName').value = data.csName || '';
                 document.getElementById('shift').value = data.shift || 'Pagi';
+                document.getElementById('linkYT').value = data.linkYT || '';
+                document.getElementById('linkAman').value = data.linkAman || '';
+                
                 if (data.checklist && data.checklist.length > 0) {
-                    // Merge structure just in case of future updates to defaultChecklist
                     checklist = defaultChecklist.map(def => {
                         const savedItem = data.checklist.find(s => s.text === def.text);
                         return savedItem ? { ...def, checked: savedItem.checked } : { ...def };
                     });
                 }
-                if (data.kendala) {
-                    savedKendala = data.kendala;
-                }
+                if (data.kendala) savedKendala = data.kendala;
             }
         }
 
+        // --- REMINDER & ALARM LOGIC ---
+        function loadReminders() {
+            const stored = localStorage.getItem('tvtoto_reminders_v7');
+            if (stored) reminders = JSON.parse(stored);
+        }
+
+        function saveReminders() {
+            localStorage.setItem('tvtoto_reminders_v7', JSON.stringify(reminders));
+        }
+
+        function enableAlarm() {
+            // Minta izin notifikasi browser
+            if (!("Notification" in window)) {
+                alert("Browser ini tidak mendukung notifikasi sistem.");
+            } else if (Notification.permission === "granted") {
+                alarmEnabled = true;
+                showToast("Alarm Diaktifkan!");
+                document.getElementById('btnEnableAlarm').classList.add('hidden');
+            } else if (Notification.permission !== "denied") {
+                Notification.requestPermission().then(function (permission) {
+                    if (permission === "granted") {
+                        alarmEnabled = true;
+                        showToast("Alarm Diaktifkan!");
+                        document.getElementById('btnEnableAlarm').classList.add('hidden');
+                    }
+                });
+            }
+        }
+
+        function playBeep() {
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContext) return;
+                
+                const ctx = new AudioContext();
+                const osc = ctx.createOscillator();
+                const gainNode = ctx.createGain();
+                
+                osc.connect(gainNode);
+                gainNode.connect(ctx.destination);
+                
+                osc.type = "sine";
+                osc.frequency.value = 880; // A5
+                gainNode.gain.value = 0.1;
+                
+                osc.start();
+                setTimeout(() => {
+                    osc.stop();
+                    ctx.close();
+                }, 200);
+            } catch (e) {
+                console.log("Audio play error", e);
+            }
+        }
+
+        function checkAlarms() {
+            if (!alarmEnabled) return;
+            const today = new Date();
+            today.setHours(0,0,0,0);
+
+            reminders.forEach(r => {
+                const targetDate = new Date(r.date);
+                const diffTime = targetDate - today;
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                if (diffDays === 0 || diffDays === 1) {
+                    playBeep();
+                    if (Notification.permission === "granted") {
+                        new Notification(`Pengingat: ${r.title}`, {
+                            body: `Akan terjadi dalam ${diffDays} hari lagi!`,
+                            icon: 'https://cdn-icons-png.flaticon.com/512/3239/3239945.png'
+                        });
+                    }
+                }
+            });
+        }
+
+        function addReminder() {
+            const title = document.getElementById('reminderTitle').value.trim();
+            const date = document.getElementById('reminderDate').value;
+            if (!title || !date) { alert("Isi Judul dan Tanggal!"); return; }
+
+            reminders.push({ id: Date.now(), title, date });
+            reminders.sort((a, b) => new Date(a.date) - new Date(b.date));
+            
+            document.getElementById('reminderTitle').value = '';
+            document.getElementById('reminderDate').value = '';
+            
+            saveReminders();
+            renderReminders();
+            showToast("Pengingat Ditambahkan!");
+        }
+
+        function renderReminders() {
+            const container = document.getElementById('reminderList');
+            const today = new Date();
+            today.setHours(0,0,0,0);
+            
+            if (reminders.length === 0) {
+                container.innerHTML = '<div class="text-indigo-400 text-[10px] italic text-center">Belum ada pengingat aktif.</div>';
+                return;
+            }
+
+            container.innerHTML = '';
+            reminders.forEach(r => {
+                const targetDate = new Date(r.date);
+                const diffTime = targetDate - today;
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                
+                let badgeClass = "bg-green-900 text-green-200 border-green-700";
+                let badgeText = `${diffDays} Hari Lagi`;
+                
+                if (diffDays < 0) {
+                    badgeClass = "bg-gray-700 text-gray-400 border-gray-600";
+                    badgeText = "Lewat";
+                } else if (diffDays === 0) {
+                    badgeClass = "bg-red-600 text-white border-red-500 pulse-red";
+                    badgeText = "HARI INI!";
+                } else if (diffDays <= 3) {
+                    badgeClass = "bg-orange-700 text-orange-200 border-orange-600";
+                }
+
+                const div = document.createElement('div');
+                div.className = 'flex justify-between items-center bg-indigo-800/30 border border-indigo-700/50 rounded p-1.5';
+                div.innerHTML = `
+                    <span class="text-xs text-indigo-100 truncate w-2/3 font-medium">${r.title}</span>
+                    <div class="flex items-center gap-2">
+                        <span class="text-[10px] font-bold px-1.5 py-0.5 rounded border ${badgeClass}">${badgeText}</span>
+                        <button onclick="deleteReminder(${r.id})" class="text-indigo-400 hover:text-red-400 text-xs">&times;</button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function deleteReminder(id) {
+            reminders = reminders.filter(r => r.id !== id);
+            saveReminders();
+            renderReminders();
+        }
+
+        // --- QUICK TEMPLATE & MANUAL INPUT ---
+        function quickAdd(text, category) {
+            savedKendala.push({ text, kategori: category });
+            updateKendalaList();
+            updateStats();
+            generateReport();
+            saveData();
+            showToast("Kendala Ditambah!");
+        }
+
+        function tambahKendalaBaru() {
+            const text = document.getElementById('kendalaText').value.trim();
+            const kategori = document.getElementById('kategoriDropdown').value;
+            if (!text) { alert('Mohon isi deskripsi kendala!'); return; }
+
+            savedKendala.push({ text, kategori });
+            document.getElementById('kendalaText').value = ''; // Reset text area
+            
+            updateKendalaList();
+            updateStats();
+            generateReport();
+            saveData();
+            showToast("Kendala Manual Ditambah");
+        }
+
+        // --- HISTORY LOGIC ---
+        function loadHistory() {
+            const stored = localStorage.getItem('tvtoto_history_v7');
+            if (stored) {
+                reportHistory = JSON.parse(stored);
+                renderHistory();
+            }
+        }
+
+        function saveToHistory() {
+            const csName = document.getElementById('csName').value || 'Tanpa Nama';
+            const reportContent = document.getElementById('output').value;
+            const timestamp = new Date().toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' });
+
+            const newEntry = {
+                id: Date.now(),
+                csName: csName,
+                date: timestamp,
+                content: reportContent
+            };
+
+            reportHistory.unshift(newEntry); 
+            if (reportHistory.length > 20) reportHistory.pop();
+
+            localStorage.setItem('tvtoto_history_v7', JSON.stringify(reportHistory));
+            renderHistory();
+            showToast("Disimpan ke Riwayat");
+        }
+
+        function renderHistory() {
+            const container = document.getElementById('historyList');
+            if (reportHistory.length === 0) {
+                container.innerHTML = '<div class="text-center text-gray-500 text-xs mt-10 italic">Belum ada riwayat tersimpan.</div>';
+                return;
+            }
+
+            container.innerHTML = '';
+            reportHistory.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'history-item bg-gray-800 border border-gray-700 rounded-lg p-3 cursor-pointer relative group';
+                div.innerHTML = `
+                    <div class="flex justify-between items-start mb-1">
+                        <span class="font-bold text-xs text-blue-300 truncate w-3/4">${item.csName}</span>
+                        <span class="text-[10px] text-gray-500 whitespace-nowrap">${item.date}</span>
+                    </div>
+                    <div class="text-[10px] text-gray-400 font-mono truncate mb-2">${item.content.substring(0, 50)}...</div>
+                    <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button onclick="copyHistoryText('${item.id}')" class="flex-1 bg-blue-900 hover:bg-blue-700 text-white text-[10px] py-1 rounded">Copy</button>
+                        <button onclick="deleteHistoryItem('${item.id}')" class="bg-red-900 hover:bg-red-700 text-white px-2 py-1 rounded text-[10px]">✕</button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function copyHistoryText(id) {
+            const item = reportHistory.find(i => i.id == id);
+            if (item) {
+                navigator.clipboard.writeText(item.content).then(() => showToast("Riwayat Disalin!"));
+            }
+        }
+
+        function deleteHistoryItem(id) {
+            if(confirm('Hapus item ini?')) {
+                reportHistory = reportHistory.filter(i => i.id != id);
+                localStorage.setItem('tvtoto_history_v7', JSON.stringify(reportHistory));
+                renderHistory();
+            }
+        }
+
+        function clearHistory() {
+            if(confirm('Hapus SEMUA riwayat?')) {
+                reportHistory = [];
+                localStorage.removeItem('tvtoto_history_v7');
+                renderHistory();
+            }
+        }
+
+        function downloadReport() {
+            const text = document.getElementById('output').value;
+            const filename = `Laporan_TVTOTO_${new Date().toISOString().slice(0,10)}.txt`;
+            const element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+            element.setAttribute('download', filename);
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+        }
+
         function resetAllData() {
-            if(confirm('Yakin ingin menghapus SEMUA data tersimpan dan mereset form?')) {
-                localStorage.removeItem('tvtoto_report_v3');
+            if(confirm('Yakin ingin menghapus SEMUA data?')) {
+                localStorage.removeItem('tvtoto_report_v7');
                 location.reload();
             }
         }
@@ -278,61 +573,36 @@
         function initChecklist() {
             const container = document.getElementById('checklistContainer');
             container.innerHTML = '';
-            
             checklist.forEach((item, index) => {
                 const btn = document.createElement('button');
-                // Base styles
-                let baseClass = "flex items-center gap-3 p-3 rounded-lg border-2 transition-all text-left w-full ";
-                
-                // Dynamic styles based on state
-                if (item.checked) {
-                    btn.className = baseClass + "bg-emerald-900 border-emerald-600 hover:bg-emerald-800 active";
-                } else {
-                    btn.className = baseClass + "bg-red-900 border-red-700 hover:bg-red-800 inactive";
-                }
+                let baseClass = "flex items-center gap-2 p-2 rounded border transition-all text-left w-full text-xs ";
+                if (item.checked) btn.className = baseClass + "bg-emerald-900 border-emerald-700 hover:bg-emerald-800 active";
+                else btn.className = baseClass + "bg-red-900 border-red-800 hover:bg-red-800 inactive";
 
                 btn.onclick = () => toggleCheck(index);
-                
-                const icon = document.createElement('span');
-                icon.className = 'text-lg flex-shrink-0';
-                icon.textContent = item.checked ? '✅' : '❌';
-                
-                const text = document.createElement('span');
-                text.className = `text-sm font-medium break-words ${item.checked ? 'text-emerald-100' : 'text-red-200'}`;
-                text.textContent = item.text;
-                
-                btn.appendChild(icon);
-                btn.appendChild(text);
+                btn.innerHTML = `<span>${item.checked ? '✅' : '❌'}</span><span class="break-words leading-tight ${item.checked ? 'text-emerald-100' : 'text-red-200'}">${item.text}</span>`;
                 container.appendChild(btn);
             });
         }
 
         function updateKendalaList() {
             const list = document.getElementById('kendalaList');
-            
             if (savedKendala.length === 0) {
-                list.innerHTML = '<p class="text-gray-500 text-sm text-center py-8">Belum ada kendala.</p>';
+                list.innerHTML = '<p class="text-gray-500 text-xs text-center py-4">Belum ada kendala.</p>';
                 return;
             }
-
             list.innerHTML = '';
             savedKendala.forEach((item, index) => {
                 const div = document.createElement('div');
-                div.className = 'kendala-item flex items-start gap-3 p-3 bg-gray-700 rounded-lg border border-gray-600 hover:border-gray-500 transition-all';
-                
+                div.className = 'kendala-item flex items-start gap-2 p-2 bg-gray-700/50 rounded border border-gray-600 hover:border-gray-500';
                 div.innerHTML = `
-                    <span class="text-xl flex-shrink-0">${categoryIcons[item.kategori]}</span>
+                    <span class="text-sm flex-shrink-0">${categoryIcons[item.kategori]}</span>
                     <div class="flex-1 min-w-0">
-                        <p class="text-xs text-gray-400 font-semibold mb-1">${categoryNames[item.kategori]}</p>
-                        <p class="text-sm text-gray-200 break-words">${item.text}</p>
+                        <p class="text-[10px] text-gray-400 font-bold uppercase">${categoryNames[item.kategori]}</p>
+                        <p class="text-xs text-gray-200 break-words">${item.text}</p>
                     </div>
-                    <button onclick="hapusKendala(${index})" class="text-red-400 hover:text-red-300 flex-shrink-0 transition-colors p-1">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                        </svg>
-                    </button>
+                    <button onclick="hapusKendala(${index})" class="text-red-400 hover:text-red-300 flex-shrink-0"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
                 `;
-                
                 list.appendChild(div);
             });
         }
@@ -340,16 +610,10 @@
         function updateStats() {
             const stats = { bank: 0, game: 0, provider: 0, lainnya: 0 };
             savedKendala.forEach(item => stats[item.kategori]++);
-            
-            // Animate numbers
-            animateValue("statBank", stats.bank);
-            animateValue("statGame", stats.game);
-            animateValue("statProvider", stats.provider);
-            animateValue("statLainnya", stats.lainnya);
-        }
-
-        function animateValue(id, value) {
-            document.getElementById(id).textContent = value;
+            document.getElementById("statBank").textContent = stats.bank;
+            document.getElementById("statGame").textContent = stats.game;
+            document.getElementById("statProvider").textContent = stats.provider;
+            document.getElementById("statLainnya").textContent = stats.lainnya;
         }
 
         // --- ACTIONS ---
@@ -363,24 +627,6 @@
         function toggleAll(status) {
             checklist.forEach(item => item.checked = status);
             initChecklist();
-            generateReport();
-            saveData();
-        }
-
-        function tambahKendalaBaru() {
-            const text = document.getElementById('kendalaText').value.trim();
-            const kategori = document.getElementById('kategoriDropdown').value;
-            
-            if (!text) {
-                alert('Mohon isi deskripsi kendala!');
-                return;
-            }
-
-            savedKendala.push({ text, kategori });
-            document.getElementById('kendalaText').value = '';
-            
-            updateKendalaList();
-            updateStats();
             generateReport();
             saveData();
         }
@@ -404,15 +650,18 @@
             }
         }
 
-        // --- REPORT GENERATION ---
         function generateReport() {
             const csName = document.getElementById('csName').value;
             const shift = document.getElementById('shift').value;
-
+            const linkYT = document.getElementById('linkYT').value;
+            const linkAman = document.getElementById('linkAman').value;
             const checked = checklist.filter(i => i.checked).map(i => i.text);
             const unchecked = checklist.filter(i => !i.checked).map(i => i.text);
 
-            let result = `Nama CS : ${csName}\nShift : ${shift}\n\nLink & YT aman : \n\n`;
+            let result = `Nama CS : ${csName}\nShift : ${shift}\n`;
+            if (linkYT) result += `Link YT : ${linkYT}\n`;
+            if (linkAman) result += `Link Aman : ${linkAman}\n`;
+            result += `\nLink & YT aman : \n\n`;
             
             if (checked.length > 0) result += `✅ ${checked.join('\n✅ ')}\n\n`;
             if (unchecked.length > 0) result += `❌ ${unchecked.join('\n❌ ')}\n\n`;
@@ -437,9 +686,7 @@
                 const btn = document.getElementById('copyBtn');
                 const originalHTML = btn.innerHTML;
                 btn.innerHTML = '✅ Tersalin!';
-                setTimeout(() => {
-                    btn.innerHTML = originalHTML;
-                }, 2000);
+                setTimeout(() => { btn.innerHTML = originalHTML; }, 2000);
             });
         }
 
@@ -456,106 +703,65 @@
 
         function processImport() {
             const text = document.getElementById('importArea').value;
-            if(!text.trim()) {
-                alert("Teks kosong!");
-                return;
-            }
-
+            if(!text.trim()) { alert("Teks kosong!"); return; }
             const lines = text.split('\n');
             let currentCategory = null;
-
-            // Reset current state partially or fully? Let's clear Kendala to avoid duplicates
-            // but keep Name/Shift if not found in text? No, better to replace logic.
-            savedKendala = []; // Clear kendala before import to prevent dupes
+            savedKendala = []; 
 
             lines.forEach(line => {
                 const cleanLine = line.trim();
-                
-                // 1. Parse Name
-                if (cleanLine.toLowerCase().includes('nama cs :')) {
-                    const val = cleanLine.split(/nama cs :/i)[1].trim();
-                    document.getElementById('csName').value = val;
-                }
-                
-                // 2. Parse Shift
+                if (cleanLine.toLowerCase().includes('nama cs :')) document.getElementById('csName').value = cleanLine.split(/nama cs :/i)[1].trim();
                 else if (cleanLine.toLowerCase().includes('shift :')) {
                     const val = cleanLine.split(/shift :/i)[1].trim();
                     const shiftSelect = document.getElementById('shift');
-                    if ([...shiftSelect.options].some(o => o.value === val)) {
-                        shiftSelect.value = val;
-                    }
+                    if ([...shiftSelect.options].some(o => o.value === val)) shiftSelect.value = val;
                 }
-                
-                // 3. Parse Checklist (Check)
+                else if (cleanLine.toLowerCase().includes('link yt')) document.getElementById('linkYT').value = cleanLine.split(/link yt :?/i)[1]?.trim() || '';
+                else if (cleanLine.toLowerCase().includes('link aman')) document.getElementById('linkAman').value = cleanLine.split(/link aman :?/i)[1]?.trim() || '';
                 else if (cleanLine.startsWith('✅')) {
                     const itemText = cleanLine.substring(2).trim();
                     const item = checklist.find(c => c.text === itemText);
                     if (item) item.checked = true;
                 }
-                
-                // 4. Parse Checklist (Uncheck)
                 else if (cleanLine.startsWith('❌')) {
                     const itemText = cleanLine.substring(2).trim();
                     const item = checklist.find(c => c.text === itemText);
                     if (item) item.checked = false;
                 }
-
-                // 5. Parse Kendala Categories
-                else if (cleanLine.includes('KENDALA BANK')) {
-                    currentCategory = 'bank';
-                }
-                else if (cleanLine.includes('KENDALA GAME')) {
-                    currentCategory = 'game';
-                }
-                else if (cleanLine.includes('KENDALA PROVIDER')) {
-                    currentCategory = 'provider';
-                }
-                else if (cleanLine.includes('KENDALA LAINNYA')) {
-                    currentCategory = 'lainnya';
-                }
-                
-                // 6. Parse Kendala Items
-                // Must be inside a category, and usually indented or bullet point
+                else if (cleanLine.includes('KENDALA BANK')) currentCategory = 'bank';
+                else if (cleanLine.includes('KENDALA GAME')) currentCategory = 'game';  
+                else if (cleanLine.includes('KENDALA PROVIDER')) currentCategory = 'provider';
+                else if (cleanLine.includes('KENDALA LAINNYA')) currentCategory = 'lainnya';
                 else if (currentCategory && (cleanLine.startsWith('•') || cleanLine.startsWith('-') || cleanLine.length > 0)) {
                     let itemText = cleanLine;
-                    // Remove bullet points if present
-                    if(itemText.startsWith('•') || itemText.startsWith('-')) {
-                        itemText = itemText.substring(1).trim();
-                    }
-                    
-                    // Prevent empty lines being added
-                    if(itemText.length > 0) {
-                        savedKendala.push({ text: itemText, kategori: currentCategory });
-                    }
+                    if(itemText.startsWith('•') || itemText.startsWith('-')) itemText = itemText.substring(1).trim();
+                    if(itemText.length > 0) savedKendala.push({ text: itemText, kategori: currentCategory });
                 }
             });
 
-            // Refresh UI
             initChecklist();
             updateKendalaList();
             updateStats();
             generateReport();
-            saveData(); // Persist imported data
+            saveData();
             closeImportModal();
-            document.getElementById('importArea').value = ''; // Clear input
+            document.getElementById('importArea').value = '';
             showToast("Import Berhasil!");
         }
 
-        // Event Listeners for Inputs to trigger Auto-Save & Report Update
-        document.getElementById('csName').addEventListener('input', () => { generateReport(); saveData(); });
-        document.getElementById('shift').addEventListener('change', () => { generateReport(); saveData(); });
+        ['csName', 'shift', 'linkYT', 'linkAman'].forEach(id => {
+            const el = document.getElementById(id);
+            el.addEventListener('input', () => { generateReport(); saveData(); });
+            el.addEventListener('change', () => { generateReport(); saveData(); });
+        });
 
-        // Toast Helper
         function showToast(message) {
             const toast = document.getElementById('toast');
             const msgEl = document.getElementById('toastMsg');
             msgEl.textContent = message;
             toast.classList.remove('translate-y-20');
-            setTimeout(() => {
-                toast.classList.add('translate-y-20');
-            }, 2000);
+            setTimeout(() => { toast.classList.add('translate-y-20'); }, 2000);
         }
-
     </script>
 </body>
 </html>
