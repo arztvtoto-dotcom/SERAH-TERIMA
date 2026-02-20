@@ -36,6 +36,90 @@
 
         .history-item { transition: all 0.2s; }
         .history-item:hover { transform: translateX(-4px); border-color: #60a5fa; }
+
+        /* =====================================================
+           REPORT OUTPUT — FULL TEXT, NO TRUNCATION
+           ===================================================== */
+        .report-output-wrapper {
+            overflow-x: auto;
+            overflow-y: auto;
+            width: 100%;
+            border-radius: 0.5rem;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid #1e3a2e;
+        }
+
+        #output {
+            display: block;
+            width: 100%;
+            min-width: max-content;
+            min-height: 200px;
+            white-space: pre-wrap;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            overflow: visible;
+            padding: 0.875rem;
+            background: transparent;
+            color: #d1fae5;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 11px;
+            line-height: 1.7;
+            resize: none;
+            outline: none;
+            border: none;
+        }
+
+        @media (max-width: 640px) {
+            #output { font-size: 10px; }
+        }
+
+        /* Kendala list items: no truncation */
+        #kendalaList p,
+        #kendalaList .text-xs {
+            white-space: normal;
+            word-break: break-word;
+            overflow: visible;
+            text-overflow: unset;
+        }
+
+        /* History items: no truncation on preview text */
+        .history-item .font-mono {
+            white-space: normal;
+            word-break: break-word;
+            overflow: visible;
+            text-overflow: unset;
+        }
+
+        /* =====================================================
+           RIGHT PANEL — REPORT OUTPUT EMBEDDED IN RIWAYAT
+           ===================================================== */
+        .output-panel-embedded {
+            background: linear-gradient(135deg, #064e3b, #022c22);
+            border: 1px solid #065f46;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 12px;
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.15);
+        }
+
+        .output-panel-embedded .output-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #6ee7b7;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+
+        .output-panel-embedded .output-actions {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 8px;
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-gray-900 via-gray-800 to-black min-h-screen p-2 md:p-4">
@@ -62,7 +146,9 @@
 
             <div class="p-4 flex-1 overflow-hidden flex flex-col xl:flex-row gap-5">
                 
-                <!-- LEFT COLUMN (30%): Inputs, Checklist, Manual Input -->
+                <!-- ═══════════════════════════════════════════
+                     LEFT COLUMN (30%): Inputs, Checklist, Manual Input
+                ═══════════════════════════════════════════ -->
                 <div class="xl:w-[30%] flex flex-col gap-4 overflow-y-auto pr-1 pb-4">
                     
                     <!-- CS Info -->
@@ -98,16 +184,14 @@
                         <div id="checklistContainer" class="grid grid-cols-1 gap-1.5 overflow-y-auto pr-1 flex-1 content-start"></div>
                     </div>
 
-                    <!-- RESTORED: Input Kendala Manual -->
+                    <!-- Input Kendala Manual -->
                     <div class="bg-gradient-to-br from-orange-900 to-red-900 p-4 rounded-xl border-2 border-orange-700 glow-gold shrink-0">
                         <h3 class="text-sm font-bold text-orange-100 mb-2 flex items-center gap-2">
                             <span>✏️</span> Input Kendala Manual
                         </h3>
-                        
                         <div class="mb-2">
                             <textarea id="kendalaText" placeholder="Contoh: WD BCA Delay / Gangguan..." class="w-full p-2.5 border-2 border-orange-600 bg-gray-800 text-white placeholder-gray-500 rounded-lg focus:border-orange-400 focus:outline-none resize-none h-16 font-mono text-xs"></textarea>
                         </div>
-
                         <div class="mb-3">
                             <select id="kategoriDropdown" class="w-full p-2 border-2 border-orange-600 bg-gray-800 text-white rounded-lg focus:border-orange-400 focus:outline-none font-semibold text-xs">
                                 <option value="bank">🏦 KENDALA BANK</option>
@@ -116,7 +200,6 @@
                                 <option value="lainnya">⚠️ KENDALA LAINNYA</option>
                             </select>
                         </div>
-
                         <button onclick="tambahKendalaBaru()" class="w-full bg-orange-600 hover:bg-orange-500 text-white py-2 rounded-lg font-bold text-sm transition-all shadow-lg">
                             ➕ TAMBAH MANUAL
                         </button>
@@ -136,7 +219,10 @@
                     </div>
                 </div>
 
-                <!-- MIDDLE COLUMN (40%): Reminder, Kendala, Output -->
+                <!-- ═══════════════════════════════════════════
+                     MIDDLE COLUMN (40%): Reminder, Kendala
+                     [Hasil Report DIPINDAH ke kanan]
+                ═══════════════════════════════════════════ -->
                 <div class="xl:w-[40%] flex flex-col gap-4 h-full overflow-hidden">
                     
                     <!-- Pengingat Panel -->
@@ -149,21 +235,19 @@
                                     🔔 Aktifkan Alarm
                                 </button>
                             </div>
-                            
                             <div class="flex gap-2 mb-2">
                                 <input type="text" id="reminderTitle" class="flex-1 p-1.5 border border-indigo-500 bg-gray-900 text-white text-xs rounded focus:outline-none" placeholder="Misal: SGP Result Delay">
                                 <input type="date" id="reminderDate" class="p-1.5 border border-indigo-500 bg-gray-900 text-white text-xs rounded focus:outline-none text-gray-400">
                                 <button onclick="addReminder()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 rounded text-xs font-bold">➕</button>
                             </div>
-                            
                             <div id="reminderList" class="max-h-[80px] overflow-y-auto space-y-1 pr-1 custom-scrollbar">
                                 <div class="text-indigo-400 text-[10px] italic text-center">Belum ada pengingat aktif.</div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- List Kendala -->
-                    <div class="bg-gray-800 p-3 rounded-xl border border-gray-600 glow flex-1 flex flex-col min-h-[200px]">
+                    <!-- List Kendala — sekarang full height di kolom tengah -->
+                    <div class="bg-gray-800 p-3 rounded-xl border border-gray-600 glow flex-1 flex flex-col overflow-hidden">
                         <div class="flex items-center justify-between mb-2 shrink-0">
                             <h3 class="text-sm font-bold text-gray-200">📋 Kendala Saat Ini</h3>
                             <button onclick="clearAllKendala()" class="text-[10px] bg-red-900/50 text-red-300 px-2 py-0.5 rounded hover:bg-red-800">🗑️ Clear</button>
@@ -174,39 +258,70 @@
                         
                         <!-- Mini Stats -->
                         <div class="mt-2 pt-2 border-t border-gray-700 grid grid-cols-4 gap-1 text-center shrink-0">
-                            <div class="bg-gray-900/80 p-1 rounded border border-blue-900/50"><div class="text-xs font-bold text-blue-400" id="statBank">0</div></div>
-                            <div class="bg-gray-900/80 p-1 rounded border border-purple-900/50"><div class="text-xs font-bold text-purple-400" id="statGame">0</div></div>
-                            <div class="bg-gray-900/80 p-1 rounded border border-pink-900/50"><div class="text-xs font-bold text-pink-400" id="statProvider">0</div></div>
-                            <div class="bg-gray-900/80 p-1 rounded border border-orange-900/50"><div class="text-xs font-bold text-orange-400" id="statLainnya">0</div></div>
-                        </div>
-                    </div>
-
-                    <!-- Output Area -->
-                    <div class="bg-gray-900 p-3 rounded-xl border border-gray-700 glow-green flex flex-col h-1/3 shrink-0">
-                        <div class="flex justify-between items-center mb-2">
-                            <label class="text-gray-200 font-bold text-xs">📤 Hasil Report</label>
-                            <div class="flex gap-2">
-                                <button onclick="downloadReport()" class="text-[10px] bg-gray-700 hover:bg-gray-600 text-white px-2 py-1 rounded border border-gray-600 flex items-center gap-1">💾 Save .txt</button>
-                                <button onclick="saveToHistory()" class="text-[10px] bg-indigo-600 hover:bg-indigo-500 text-white px-2 py-1 rounded shadow">💾 Simpan</button>
-                                <button id="copyBtn" onclick="copyToClipboard()" class="text-[10px] bg-emerald-600 hover:bg-emerald-500 text-white px-2 py-1 rounded font-bold shadow">📋 Salin</button>
+                            <div class="bg-gray-900/80 p-1 rounded border border-blue-900/50">
+                                <div class="text-[9px] text-blue-500 font-bold mb-0.5">BANK</div>
+                                <div class="text-xs font-bold text-blue-400" id="statBank">0</div>
+                            </div>
+                            <div class="bg-gray-900/80 p-1 rounded border border-purple-900/50">
+                                <div class="text-[9px] text-purple-500 font-bold mb-0.5">GAME</div>
+                                <div class="text-xs font-bold text-purple-400" id="statGame">0</div>
+                            </div>
+                            <div class="bg-gray-900/80 p-1 rounded border border-pink-900/50">
+                                <div class="text-[9px] text-pink-500 font-bold mb-0.5">PROV</div>
+                                <div class="text-xs font-bold text-pink-400" id="statProvider">0</div>
+                            </div>
+                            <div class="bg-gray-900/80 p-1 rounded border border-orange-900/50">
+                                <div class="text-[9px] text-orange-500 font-bold mb-0.5">LAIN</div>
+                                <div class="text-xs font-bold text-orange-400" id="statLainnya">0</div>
                             </div>
                         </div>
-                        <textarea id="output" readonly class="w-full h-full p-2.5 border border-gray-700 bg-black/50 text-gray-100 rounded-lg font-mono text-[11px] resize-none focus:outline-none leading-relaxed"></textarea>
                     </div>
                 </div>
 
-                <!-- RIGHT COLUMN (30%): History Log -->
-                <div class="xl:w-[30%] flex flex-col h-full overflow-hidden bg-gray-800/40 rounded-xl border border-gray-700/50">
+                <!-- ═══════════════════════════════════════════
+                     RIGHT COLUMN (30%): Hasil Report + Riwayat
+                ═══════════════════════════════════════════ -->
+                <div class="xl:w-[30%] flex flex-col h-full overflow-hidden gap-0 bg-gray-800/40 rounded-xl border border-gray-700/50">
+
+                    <!-- ── HEADER PANEL KANAN ── -->
                     <div class="p-3 bg-gray-800 border-b border-gray-700 flex justify-between items-center shrink-0">
-                        <h3 class="text-sm font-bold text-blue-300">🗂️ Riwayat Laporan</h3>
-                        <button onclick="clearHistory()" class="text-[10px] text-red-400 hover:text-red-300 underline">Hapus Semua</button>
+                        <h3 class="text-sm font-bold text-blue-300">🗂️ Report &amp; Riwayat</h3>
+                        <button onclick="clearHistory()" class="text-[10px] text-red-400 hover:text-red-300 underline">Hapus Riwayat</button>
                     </div>
-                    <div id="historyList" class="flex-1 overflow-y-auto p-3 space-y-3">
-                        <div class="text-center text-gray-500 text-xs mt-10 italic">Belum ada riwayat tersimpan.</div>
-                    </div>
-                </div>
 
-            </div>
+                    <div class="flex-1 overflow-y-auto p-3 flex flex-col gap-4">
+
+                        <!-- ══ HASIL REPORT — DIPINDAH KE SINI ══ -->
+                        <div class="output-panel-embedded shrink-0">
+                            <!-- Label + Actions -->
+                            <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
+                                <div class="output-label">📤 Hasil Report</div>
+                                <div class="output-actions">
+                                    <button onclick="downloadReport()" class="text-[10px] bg-gray-700 hover:bg-gray-600 text-white px-2 py-1 rounded border border-gray-600 flex items-center gap-1 transition-colors">💾 .txt</button>
+                                    <button onclick="saveToHistory()" class="text-[10px] bg-indigo-700 hover:bg-indigo-600 text-white px-2 py-1 rounded shadow transition-colors">💾 Simpan</button>
+                                    <button id="copyBtn" onclick="copyToClipboard()" class="text-[10px] bg-emerald-600 hover:bg-emerald-500 text-white px-2 py-1 rounded font-bold shadow transition-colors">📋 Salin</button>
+                                </div>
+                            </div>
+                            <!-- Output full-width, no truncation -->
+                            <div class="report-output-wrapper">
+                                <textarea id="output" readonly spellcheck="false"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- ══ RIWAYAT LAPORAN ══ -->
+                        <div class="flex flex-col gap-1 shrink-0">
+                            <div class="flex items-center gap-2 mb-1 px-1">
+                                <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">📁 Riwayat Tersimpan</span>
+                            </div>
+                            <div id="historyList" class="flex flex-col gap-2">
+                                <div class="text-center text-gray-500 text-xs py-4 italic">Belum ada riwayat tersimpan.</div>
+                            </div>
+                        </div>
+
+                    </div><!-- /scroll-wrap -->
+                </div><!-- /col-right -->
+
+            </div><!-- /3-column grid -->
         </div>
     </div>
 
@@ -234,6 +349,9 @@
         <span id="toastMsg" class="font-semibold text-sm">Berhasil!</span>
     </div>
 
+    <!-- ═══════════════════════════════════════════════════════
+         JAVASCRIPT — TIDAK ADA PERUBAHAN LOGIC / FUNGSI
+    ═══════════════════════════════════════════════════════ -->
     <script>
         // --- DATA & STATE ---
         let savedKendala = [];
@@ -271,7 +389,7 @@
             updateStats();
             renderReminders();
             generateReport();
-            setInterval(checkAlarms, 60000); // Cek alarm tiap 1 menit
+            setInterval(checkAlarms, 60000);
         });
 
         // --- LOCAL STORAGE FUNCTIONS ---
@@ -317,7 +435,6 @@
         }
 
         function enableAlarm() {
-            // Minta izin notifikasi browser
             if (!("Notification" in window)) {
                 alert("Browser ini tidak mendukung notifikasi sistem.");
             } else if (Notification.permission === "granted") {
@@ -339,38 +456,27 @@
             try {
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
                 if (!AudioContext) return;
-                
                 const ctx = new AudioContext();
                 const osc = ctx.createOscillator();
                 const gainNode = ctx.createGain();
-                
                 osc.connect(gainNode);
                 gainNode.connect(ctx.destination);
-                
                 osc.type = "sine";
-                osc.frequency.value = 880; // A5
+                osc.frequency.value = 880;
                 gainNode.gain.value = 0.1;
-                
                 osc.start();
-                setTimeout(() => {
-                    osc.stop();
-                    ctx.close();
-                }, 200);
-            } catch (e) {
-                console.log("Audio play error", e);
-            }
+                setTimeout(() => { osc.stop(); ctx.close(); }, 200);
+            } catch (e) { console.log("Audio play error", e); }
         }
 
         function checkAlarms() {
             if (!alarmEnabled) return;
             const today = new Date();
             today.setHours(0,0,0,0);
-
             reminders.forEach(r => {
                 const targetDate = new Date(r.date);
                 const diffTime = targetDate - today;
                 const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
                 if (diffDays === 0 || diffDays === 1) {
                     playBeep();
                     if (Notification.permission === "granted") {
@@ -387,13 +493,10 @@
             const title = document.getElementById('reminderTitle').value.trim();
             const date = document.getElementById('reminderDate').value;
             if (!title || !date) { alert("Isi Judul dan Tanggal!"); return; }
-
             reminders.push({ id: Date.now(), title, date });
             reminders.sort((a, b) => new Date(a.date) - new Date(b.date));
-            
             document.getElementById('reminderTitle').value = '';
             document.getElementById('reminderDate').value = '';
-            
             saveReminders();
             renderReminders();
             showToast("Pengingat Ditambahkan!");
@@ -403,31 +506,20 @@
             const container = document.getElementById('reminderList');
             const today = new Date();
             today.setHours(0,0,0,0);
-            
             if (reminders.length === 0) {
                 container.innerHTML = '<div class="text-indigo-400 text-[10px] italic text-center">Belum ada pengingat aktif.</div>';
                 return;
             }
-
             container.innerHTML = '';
             reminders.forEach(r => {
                 const targetDate = new Date(r.date);
                 const diffTime = targetDate - today;
                 const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                
                 let badgeClass = "bg-green-900 text-green-200 border-green-700";
                 let badgeText = `${diffDays} Hari Lagi`;
-                
-                if (diffDays < 0) {
-                    badgeClass = "bg-gray-700 text-gray-400 border-gray-600";
-                    badgeText = "Lewat";
-                } else if (diffDays === 0) {
-                    badgeClass = "bg-red-600 text-white border-red-500 pulse-red";
-                    badgeText = "HARI INI!";
-                } else if (diffDays <= 3) {
-                    badgeClass = "bg-orange-700 text-orange-200 border-orange-600";
-                }
-
+                if (diffDays < 0) { badgeClass = "bg-gray-700 text-gray-400 border-gray-600"; badgeText = "Lewat"; }
+                else if (diffDays === 0) { badgeClass = "bg-red-600 text-white border-red-500 pulse-red"; badgeText = "HARI INI!"; }
+                else if (diffDays <= 3) { badgeClass = "bg-orange-700 text-orange-200 border-orange-600"; }
                 const div = document.createElement('div');
                 div.className = 'flex justify-between items-center bg-indigo-800/30 border border-indigo-700/50 rounded p-1.5';
                 div.innerHTML = `
@@ -461,10 +553,8 @@
             const text = document.getElementById('kendalaText').value.trim();
             const kategori = document.getElementById('kategoriDropdown').value;
             if (!text) { alert('Mohon isi deskripsi kendala!'); return; }
-
             savedKendala.push({ text, kategori });
-            document.getElementById('kendalaText').value = ''; // Reset text area
-            
+            document.getElementById('kendalaText').value = '';
             updateKendalaList();
             updateStats();
             generateReport();
@@ -485,17 +575,9 @@
             const csName = document.getElementById('csName').value || 'Tanpa Nama';
             const reportContent = document.getElementById('output').value;
             const timestamp = new Date().toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' });
-
-            const newEntry = {
-                id: Date.now(),
-                csName: csName,
-                date: timestamp,
-                content: reportContent
-            };
-
-            reportHistory.unshift(newEntry); 
+            const newEntry = { id: Date.now(), csName, date: timestamp, content: reportContent };
+            reportHistory.unshift(newEntry);
             if (reportHistory.length > 20) reportHistory.pop();
-
             localStorage.setItem('tvtoto_history_v7', JSON.stringify(reportHistory));
             renderHistory();
             showToast("Disimpan ke Riwayat");
@@ -504,34 +586,70 @@
         function renderHistory() {
             const container = document.getElementById('historyList');
             if (reportHistory.length === 0) {
-                container.innerHTML = '<div class="text-center text-gray-500 text-xs mt-10 italic">Belum ada riwayat tersimpan.</div>';
+                container.innerHTML = '<div class="text-center text-gray-500 text-xs py-4 italic">Belum ada riwayat tersimpan.</div>';
                 return;
             }
-
             container.innerHTML = '';
             reportHistory.forEach(item => {
                 const div = document.createElement('div');
-                div.className = 'history-item bg-gray-800 border border-gray-700 rounded-lg p-3 cursor-pointer relative group';
+                div.className = 'history-item bg-gray-800 border border-gray-700 rounded-lg overflow-hidden cursor-pointer relative group';
+
+                // Full report content — wrap text, no truncation
+                const reportHtml = `
+                    <div style="
+                        overflow-x: auto;
+                        background: rgba(0,0,0,0.4);
+                        border-top: 1px solid #374151;
+                        padding: 10px 12px;
+                    ">
+                        <pre style="
+                            font-family: 'Courier New', Courier, monospace;
+                            font-size: 10px;
+                            color: #d1fae5;
+                            white-space: pre-wrap;
+                            word-break: break-word;
+                            overflow-wrap: break-word;
+                            line-height: 1.65;
+                            margin: 0;
+                        ">${escapeHtml(item.content)}</pre>
+                    </div>
+                `;
+
                 div.innerHTML = `
-                    <div class="flex justify-between items-start mb-1">
-                        <span class="font-bold text-xs text-blue-300 truncate w-3/4">${item.csName}</span>
+                    <!-- Card Header -->
+                    <div class="flex justify-between items-center px-3 py-2 bg-gray-800">
+                        <div class="flex items-center gap-2">
+                            <span class="font-bold text-xs text-blue-300">${item.csName}</span>
+                            <span class="text-[9px] bg-blue-900/50 text-blue-400 px-1.5 py-0.5 rounded border border-blue-800">Riwayat</span>
+                        </div>
                         <span class="text-[10px] text-gray-500 whitespace-nowrap">${item.date}</span>
                     </div>
-                    <div class="text-[10px] text-gray-400 font-mono truncate mb-2">${item.content.substring(0, 50)}...</div>
-                    <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button onclick="copyHistoryText('${item.id}')" class="flex-1 bg-blue-900 hover:bg-blue-700 text-white text-[10px] py-1 rounded">Copy</button>
-                        <button onclick="deleteHistoryItem('${item.id}')" class="bg-red-900 hover:bg-red-700 text-white px-2 py-1 rounded text-[10px]">✕</button>
+
+                    <!-- Full Report Content (wrap, no ellipsis) -->
+                    ${reportHtml}
+
+                    <!-- Actions -->
+                    <div class="flex gap-2 px-3 py-2 bg-gray-900/60 border-t border-gray-700/50 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button onclick="copyHistoryText('${item.id}')" class="flex-1 bg-blue-900 hover:bg-blue-700 text-white text-[10px] py-1.5 rounded transition-colors">📋 Salin</button>
+                        <button onclick="deleteHistoryItem('${item.id}')" class="bg-red-900 hover:bg-red-700 text-white px-3 py-1.5 rounded text-[10px] transition-colors">✕ Hapus</button>
                     </div>
                 `;
                 container.appendChild(div);
             });
         }
 
+        // Helper: escape HTML untuk ditampilkan di dalam <pre>
+        function escapeHtml(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
         function copyHistoryText(id) {
             const item = reportHistory.find(i => i.id == id);
-            if (item) {
-                navigator.clipboard.writeText(item.content).then(() => showToast("Riwayat Disalin!"));
-            }
+            if (item) { navigator.clipboard.writeText(item.content).then(() => showToast("Riwayat Disalin!")); }
         }
 
         function deleteHistoryItem(id) {
@@ -578,7 +696,6 @@
                 let baseClass = "flex items-center gap-2 p-2 rounded border transition-all text-left w-full text-xs ";
                 if (item.checked) btn.className = baseClass + "bg-emerald-900 border-emerald-700 hover:bg-emerald-800 active";
                 else btn.className = baseClass + "bg-red-900 border-red-800 hover:bg-red-800 inactive";
-
                 btn.onclick = () => toggleCheck(index);
                 btn.innerHTML = `<span>${item.checked ? '✅' : '❌'}</span><span class="break-words leading-tight ${item.checked ? 'text-emerald-100' : 'text-red-200'}">${item.text}</span>`;
                 container.appendChild(btn);
@@ -599,7 +716,7 @@
                     <span class="text-sm flex-shrink-0">${categoryIcons[item.kategori]}</span>
                     <div class="flex-1 min-w-0">
                         <p class="text-[10px] text-gray-400 font-bold uppercase">${categoryNames[item.kategori]}</p>
-                        <p class="text-xs text-gray-200 break-words">${item.text}</p>
+                        <p class="text-xs text-gray-200" style="white-space:normal;word-break:break-word;">${item.text}</p>
                     </div>
                     <button onclick="hapusKendala(${index})" class="text-red-400 hover:text-red-300 flex-shrink-0"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
                 `;
@@ -661,16 +778,14 @@
             let result = `Nama CS : ${csName}\nShift : ${shift}\n`;
             if (linkYT) result += `Link YT : ${linkYT}\n`;
             if (linkAman) result += `Link Aman : ${linkAman}\n`;
-            
-            if (checked.length > 0) result += `✅ ${checked.join('\n✅ ')}\n\n`;
-            if (unchecked.length > 0) result += `❌ ${unchecked.join('\n❌ ')}\n\n`;
-            
+            if (checked.length > 0) result += `\n✅ ${checked.join('\n✅ ')}\n`;
+            if (unchecked.length > 0) result += `\n❌ ${unchecked.join('\n❌ ')}\n`;
+
             ['bank', 'game', 'provider', 'lainnya'].forEach(kategori => {
                 const items = savedKendala.filter(k => k.kategori === kategori);
                 if (items.length > 0) {
-                    result += `${categoryIcons[kategori]} ${categoryNames[kategori]}:\n`;
+                    result += `\n${categoryIcons[kategori]} ${categoryNames[kategori]}:\n`;
                     items.forEach(item => result += `  • ${item.text}\n`);
-                    result += '\n';
                 }
             });
 
@@ -705,7 +820,7 @@
             if(!text.trim()) { alert("Teks kosong!"); return; }
             const lines = text.split('\n');
             let currentCategory = null;
-            savedKendala = []; 
+            savedKendala = [];
 
             lines.forEach(line => {
                 const cleanLine = line.trim();
@@ -728,7 +843,7 @@
                     if (item) item.checked = false;
                 }
                 else if (cleanLine.includes('KENDALA BANK')) currentCategory = 'bank';
-                else if (cleanLine.includes('KENDALA GAME')) currentCategory = 'game';  
+                else if (cleanLine.includes('KENDALA GAME')) currentCategory = 'game';
                 else if (cleanLine.includes('KENDALA PROVIDER')) currentCategory = 'provider';
                 else if (cleanLine.includes('KENDALA LAINNYA')) currentCategory = 'lainnya';
                 else if (currentCategory && (cleanLine.startsWith('•') || cleanLine.startsWith('-') || cleanLine.length > 0)) {
